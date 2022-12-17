@@ -3,6 +3,7 @@ package com.Parul.MavenAssignment;
 import static org.testng.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -11,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -46,6 +48,14 @@ public class Assignment1 {
 		isBtnSelectedForRate();
 		isbtnselectedForPayment();
 		validateOrder();
+		confirmOrder();
+
+	}
+
+	@AfterMethod
+	public void tearDown() {
+
+		// wd.close();
 
 	}
 
@@ -69,11 +79,12 @@ public class Assignment1 {
 	}
 
 	public void validateCart() {
+		sleep(2);
+		WebElement cartTotal = wd.findElement(By.cssSelector("div#cart span"));
 
-		WebElement cartTotal = wd.findElement(By.id("cart-total"));
-		String totalInCart = cartTotal.getText();
-		System.out.println("this is total ===== " + totalInCart);
-		// cartTotal.click();
+		String itemTotal = cartTotal.getText();
+		Assert.assertEquals(itemTotal, "1 item(s) - $279.99", "Invalid");
+
 	}
 
 	public void checkout() {
@@ -96,24 +107,24 @@ public class Assignment1 {
 		WebElement postCode = wd.findElement(By.cssSelector("input[name='postcode']"));
 		postCode.sendKeys("A1B2C3");
 
-		selectCountryByValue(wd.findElement(By.cssSelector("select[name='country_id']")), "38");
-		selectStateByValue(wd.findElement(By.cssSelector("select[name='zone_id']")), "609");
+		selectByValue(wd.findElement(By.cssSelector("select[name='country_id']")), "38");
+		selectByValue(wd.findElement(By.cssSelector("select[name='zone_id']")), "609");
 
 		wd.findElement(By.cssSelector("input[type='button']")).click();
 
 	}
 
-	public void selectCountryByValue(WebElement element, String value) {
+	public void selectByValue(WebElement element, String value) {
 		Select sc = new Select(element);
 		sc.selectByValue(value);
 
 	}
 
-	private void selectStateByValue(WebElement element, String value) {
-		Select sc = new Select(element);
-		sc.selectByValue(value);
-
-	}
+//	private void selectStateByValue(WebElement element, String value) {
+//		Select sc = new Select(element);
+//		sc.selectByValue(value);
+//
+//	}
 
 	public void verifyBilling() {
 		wd.findElement(By.cssSelector("#collapse-payment-address div.radio input[value='existing']")).click();
@@ -161,15 +172,39 @@ public class Assignment1 {
 	}
 
 	public void validateOrder() {
-
+		sleep(2);
 		WebElement quantityCheck = wd
 				.findElement(By.cssSelector("div[class='table-responsive'] tbody tr td:nth-child(3)"));
-		//String enteredQuantity = null;
+		sleep(2);
 		// System.out.println("Quantity " + quantityCheck.getText());
-		
-		List<WebElement> rows = quantityCheck.findElements(By.tagName("tr"));
-		assertEquals(false, false);
 
+		Assert.assertEquals(quantityCheck.getText(), "1", "invalid quantity");
+		sleep(2);
+		WebElement productCheck = wd.findElement(By.cssSelector("div.table-responsive td.text-left a:first-of-type"));
+		sleep(2);
+		Assert.assertEquals(productCheck.getText(), "Palm Treo Pro", "invalid");
+		sleep(2);
+		wd.findElement(By.cssSelector("#button-confirm:last-child")).click();
+		sleep(2);
+	}
+
+	public void confirmOrder() {
+
+		WebElement orderConfirmation = wd.findElement(By.cssSelector("#content h1"));
+		sleep(2);
+
+		Assert.assertEquals(orderConfirmation.getText(), "Your order has been placed!", "invalid title");
+
+		// System.out.println("Message displayed " + isTextDisplayed);
+
+	}
+
+	public void sleep(int timer) {
+		try {
+			Thread.sleep(timer * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
