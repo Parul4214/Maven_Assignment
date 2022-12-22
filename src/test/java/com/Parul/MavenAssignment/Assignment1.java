@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -22,11 +23,15 @@ public class Assignment1 {
 
 	@BeforeMethod
 	public void setup() {
+
 		System.setProperty("webdriver.chrome.driver", "D:\\Chrome Driver\\chromedriver.exe");
+		// System.setProperty("webdriver.edge.driver", "D:\\Web Drivers\\EdgeDriver\\msedgedriver.exe");
+
 		wd = new ChromeDriver();
-		wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		wd.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		wd.get("https://naveenautomationlabs.com/opencart/index.php?route=account/login");
 		wd.manage().window().maximize();
+		
 	}
 
 	@Test
@@ -165,7 +170,7 @@ public class Assignment1 {
 		boolean isBtnEnabledforPayment = btnForPayment.isEnabled();
 		Assert.assertTrue(isBtnEnabledforPayment);
 		// btnForPayment.click();
-
+		sleep(2);
 		wd.findElement(By.cssSelector("input[type='checkbox']")).click();
 		wd.findElement(By.cssSelector("div.pull-right>input#button-payment-method")).click();
 
@@ -191,7 +196,6 @@ public class Assignment1 {
 	public void confirmOrder() {
 
 		WebElement orderConfirmation = wd.findElement(By.cssSelector("#content h1"));
-		sleep(2);
 
 		Assert.assertEquals(orderConfirmation.getText(), "Your order has been placed!", "invalid title");
 
